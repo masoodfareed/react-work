@@ -1,14 +1,20 @@
 const { response } = require('express');
 var express = require('express');
+const cors = require('cors');
 const {sequelize} = require('./lib/db')
-var Student = require('./lib/models.js')
+
 var app = express();
 
-var port = 3000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use( cors())
+var port = 3001;
 sequelize.sync().then(() => 
 {
     console.log('Connecting')
 });
+const {Student} = require('./lib/models.js')
 
 
 app.listen(port , function()
@@ -46,40 +52,25 @@ app.get('/' , function(request , response)
     response.send('Hello World');
 })
 
-app.get('/books' , function(request , response)
+
+app.get('/Students' , async function(request , response)
 {
-    request.query.author;
-    var filteredBooks = [];
-    if(request.query.author)
-   {
-     books.forEach(element => {
-        if(element.author == request.query.author && element.title == request.query.title) 
-        {
-            filteredBooks.push(element);
-        }
-    });
-    response.send(filteredBooks)
-   }
-   else
-   {
-       response.send(books)
-   }
+    console.log(1)
+    response.json(await Student.findAll({}));
 })
 
-app.get('/books/:id' , function(request , response)
+app.post('/Students' , async function(request , response)
 {
-    
-    books.forEach(element => {
-        if(element.id == request.params.id) 
-        {
-            response.json(element)
-        }
+    var student = 
+    {
+        Name : request.body.Name,
+        Email : request.body.Email,
+        createdAt : Date.now(),
+        updatedAt : Date.now()
+    }
+    await Student.create(student).then(data => {
+        response.json(data)
     });
-})
-
-app.get('/Students' , function(request , response)
-{
-    response.send(Student.findAll({}));
 })
 
 

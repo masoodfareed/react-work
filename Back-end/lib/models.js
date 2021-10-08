@@ -22,4 +22,4 @@ Student.init(
     }
 )
 
-module.exports = Student
+module.exports = {Student}
