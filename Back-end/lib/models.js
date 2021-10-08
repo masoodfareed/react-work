@@ -1,4 +1,5 @@
-const {Sequelize , Model, DataTypes} = require('sequelize');
+const {Sequelize , Model} = require('sequelize');
+const {DataTypes} = require('sequelize')
 const {sequelize} = require('./db.js')
 class Student extends Model
 {

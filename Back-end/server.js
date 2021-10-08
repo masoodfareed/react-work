@@ -8,13 +8,13 @@ var app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use( cors())
+app.use(cors())
 var port = 3001;
 sequelize.sync().then(() => 
 {
     console.log('Connecting')
 });
-const {Student} = require('./lib/models.js')
+const {Student} = require('./lib/models.js');
 
 
 app.listen(port , function()
@@ -61,6 +61,7 @@ app.get('/Students' , async function(request , response)
 
 app.post('/Students' , async function(request , response)
 {
+    console.log(request.body)
     var student = 
     {
         Name : request.body.Name,
@@ -71,6 +72,32 @@ app.post('/Students' , async function(request , response)
     await Student.create(student).then(data => {
         response.json(data)
     });
+})
+
+app.delete('/Students/:id' , async function(request , response)
+{
+    var idOfStudent = request.params.id;
+    await Student.destroy({where : {Id : idOfStudent}}).then(data => 
+        {
+            response.json(data)
+        })
+})
+
+app.get('/Students/:id' , async function(request , response)
+{
+    await Student.findByPk(request.params.id).then(data => 
+        {
+            response.json(data)
+        });
+})
+
+app.put('/Students/:id' , async function(request , response)
+{
+    console.log(request.body)
+    await Student.update(request.body , { where : {Id : request.params.id}})
+    .then(data => {
+        response.json(data);
+    })
 })
 
 
